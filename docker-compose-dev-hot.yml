@@ -1,0 +1,24 @@
+---
+version: '3'
+services:
+  test:
+    image: 'ispywar/ispywar-dev'
+    container_name: 'ispywar-test'
+    ports:
+    - '3000:3000'
+    volumes:
+    - ./:/usr/src/app
+    - node_modules:/usr/src/app/node_modules
+    command: 'npm run test'
+  postgres-db-test:
+    image: 'ispywar/mm-postgres'
+    container_name: 'ispywar-test-database'
+    environment:
+    - POSTGRES_PASSWORD=admin
+    - POSTGRES_USER=mmadmin
+    - POSTGRES_DB=mmdb      
+    volumes:
+    - test-db-volume:/var/lib/postgresql/data
+volumes:
+  node_modules:
+  test-db-volume:
