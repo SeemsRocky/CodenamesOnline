@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { newSession, joinSession, updateStores } from '../actions/actions';
 
 // const mapDispatchToProps = (dispatch) => ({
@@ -10,7 +10,7 @@ const FormContainer = () => {
   const dispatch = useDispatch();
   const [roomNum, changeRoom] = useState('');
   const [username, changeUser] = useState('');
-
+  const myState = useSelector((state) => state);
 
   // const readyToggle = () => {
   //   const socketConnect = (room) => io('localhost:3000', {
@@ -30,12 +30,13 @@ const FormContainer = () => {
       <button
         id="Buttjoin"
         type="button"
-        onClick={() => {
-          dispatch(joinSession(roomNum, username));
-          dispatch(updateStores(roomNum));
+        onClick={async () => {
+          await dispatch(updateStores(roomNum));
+          console.log(`state before adding joined user ${myState}`);
+          await dispatch(joinSession(roomNum, username));
         }}
       >
-      Join
+        Join
       </button>
       <button id="Buttcreate" type="button" onClick={() => dispatch(newSession(username))}>Create</button>
       {/* <button type="button" onClick={readyToggle}>Ready Up</button> */}
