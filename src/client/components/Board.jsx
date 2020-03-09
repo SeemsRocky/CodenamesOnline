@@ -11,6 +11,8 @@ const mapStateToProps = (state) => ({
   socket: state.socket.socket,
   currTeamTurn: state.game.currTeamTurn,
   currUser: state.game.currUser,
+  redTeam: state.game.redTeam,
+  blueTeam: state.game.blueTeam,
 });
 
 class Board extends Component {
@@ -22,11 +24,11 @@ class Board extends Component {
   }
 
   handleTileClick(socket, sessionID, affiliation, boardLocation) {
-    console.log('handling tile click pls show up@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     const { currUser, currTeamTurn } = this.props;
     const { team } = currUser;
+    console.log(currUser);
     console.log(team, currTeamTurn);
-    console.log('are we in here');
+    console.log(this.props);
     if (currTeamTurn === team) {
       socket.emit('tile clicked', { team, boardLocation, sessionID });
     }

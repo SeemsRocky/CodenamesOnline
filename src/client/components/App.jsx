@@ -16,11 +16,14 @@ import Dashboard from '../containers/Dashboard';
 // };
 
 const App = () => {
+  const currState = useSelector((state) => state);
   const dispatch = useDispatch();
   const { socket } = useSelector((store) => store.socket);
   // socket.emit('join session', username);
   if (socket) {
     socket.on('joined', (msg) => {
+      console.log(currState);
+      console.log('joinedmsg', msg);
       dispatch(updateTeams(msg));
     });
 

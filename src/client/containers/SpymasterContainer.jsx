@@ -4,22 +4,20 @@ import { populateBoard, setCurrentClue } from '../actions/actions';
 
 
 // FOR TESTING
-import LandingPageButton from '../components/buttons/LandingPageButton.jsx';
+import LandingPageButton from '../components/buttons/LandingPageButton';
 
-const mapStateToProps = (state) => {
-  console.log('in map state to props, ', state);
-  return {
+const mapStateToProps = (state) =>
+  // console.log('in map state to props, ', state);
+  ({
     sessionID: state.game.sessionID,
     socket: state.socket.socket,
-  };
-};
-
+  });
 const mapDispatchToProps = (dispatch) => ({
   // makeNewSession: () => dispatch(makeNewSession()),
   // joinSession: (currentSession, newUsername) => dispatch(joinSession(currentSession, newUsername)),
   populateBoard: (sessionID) => dispatch(populateBoard(sessionID)),
-  newClueInput: (text) => dispatch(newClueInput(text)),
-  updateGuesses: (num) => dispatch(updateGuesses(num)),
+  // newClueInput: (text) => dispatch(newClueInput(text)),
+  // updateGuesses: (num) => dispatch(updateGuesses(num)),
   setCurrentClue: (text, num) => dispatch(setCurrentClue(text, num)),
 });
 

@@ -24,14 +24,14 @@ const clueReducer = (state = initialState, action) => {
         guessesLeft: action.payload.guesses,
       };
     case types.SELECT_TILE:
-    // case types.UPDATE_GUESSES:
-    //   console.log('update guesses, clue reducer');
-    //   return {
-    //     ...state,
-    //     newGuesses: action.payload,
-    //   };
+    case types.UPDATE_GUESSES:
+      console.log('update guesses, clue reducer');
+      return {
+        ...state,
+        newGuesses: action.payload,
+      };
     default:
-      console.log('default reducer run, clue reducer');
+      // console.log('default reducer run, clue reducer');
       return state;
   }
 };

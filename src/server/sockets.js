@@ -11,7 +11,6 @@ module.exports = {
       socket.join(room);
       socket.on('join session', (username) => {
         console.log('recieved from client: ', username, room);
-
         db.query(`SELECT * FROM "user" WHERE room='${room}'`)
           .then((result) => {
             const [blue, red] = result.rows.reduce((acc, row) => {
@@ -59,7 +58,7 @@ module.exports = {
         console.log('inside tile picked action, in backend');
         db.query(`UPDATE board SET selected=true WHERE room='${sessionID}' AND location=${boardLocation}`)
           .then((res) => {
-            console.log('changed word status: ', res);
+            // console.log('changed word status: ', res);
             io.to(room).emit('tile selected', ({ affiliation, boardLocation, sessionID }));
           })
           .catch((err) => console.log('error in updating tile: ', err));

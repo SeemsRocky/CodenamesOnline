@@ -8,7 +8,6 @@ class Word {
     this.id = id;
     this.cardPicked = cardPicked;
     this.affiliation = affiliation;
-    console.log(affiliation);
   }
 }
 
