@@ -26,10 +26,11 @@ class GameContainer extends Component {
         <h2>
           {`Welcome to iSpy! Session: ${sessionID || 'TBD'}`}
         </h2>
-        This is the Game Container
         <ClueDisplay guesses={guessesLeft} clue={currentClue} />
-        <Board />
-        <ChatboxContainer />
+        <section id="GameChatContainer">
+          <Board />
+          <ChatboxContainer />
+        </section>
       </section>
     );
   }

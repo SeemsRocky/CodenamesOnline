@@ -10,7 +10,6 @@ const FormContainer = () => {
   const dispatch = useDispatch();
   const [roomNum, changeRoom] = useState('');
   const [username, changeUser] = useState('');
-  const myState = useSelector((state) => state);
 
   // const readyToggle = () => {
   //   const socketConnect = (room) => io('localhost:3000', {
@@ -22,25 +21,23 @@ const FormContainer = () => {
   // };
 
   return (
-    <>
+    <section id="userlogin">
       Username:
       <input id="username" type="text" value={username} onChange={(e) => changeUser(e.target.value)} />
       Room ID:
       <input id="roomID" type="text" value={roomNum} onChange={(e) => changeRoom(e.target.value)} />
       <button
-        id="Buttjoin"
+        id="joinbutton"
         type="button"
-        onClick={async () => {
-          await dispatch(updateStores(roomNum));
-          console.log(`state before adding joined user ${myState}`);
-          await dispatch(joinSession(roomNum, username));
+        onClick={() => {
+          dispatch(joinSession(roomNum, username));
+          dispatch(updateStores(roomNum));
         }}
       >
         Join
       </button>
-      <button id="Buttcreate" type="button" onClick={() => dispatch(newSession(username))}>Create</button>
-      {/* <button type="button" onClick={readyToggle}>Ready Up</button> */}
-    </>
+      <button id="createbutton" type="button" onClick={() => dispatch(newSession(username))}>Create</button>
+    </section>
   );
 };
 

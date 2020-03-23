@@ -9,7 +9,6 @@ const iSpyContainer = () => {
   const { currUser: { username } } = useSelector((store) => store.game);
   return (
     <>
-      <p>{username}</p>
       <GameContainer />
       <ListContainer />
       <SpymasterContainer />

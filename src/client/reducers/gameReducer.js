@@ -43,26 +43,27 @@ const gameReducer = (state = initialState, action) => {
     }
     case types.JOIN_SESSION: {
       // return { sessionID: action.payload.sessionID, username: action.payload.username };
-      // return state;
       const { sessionID, username } = action.payload;
       const redCount = state.redTeam.members.length;
       const blueCount = state.blueTeam.members.length;
       const team = blueCount > redCount ? 'red' : 'blue';
+      const teamKey = `${team}Team`;
       const isSpyMaster = redCount === 0;
-      // console.log('state before adding joined user', state);
-      // console.log('payload in JOIN_SESSION', action.payload);
-      // console.log('isSpymaster: ', isSpyMaster);
-      // console.log('my team is ', team);
+      console.log('payload in JOIN_SESSION', action.payload);
+      console.log('isSpymaster: ', isSpyMaster);
       return {
         ...state,
         sessionID,
         currUser: { username, isSpyMaster, team },
+        [teamKey]: {
+          ...state[teamKey],
+          members: [...state[teamKey].members.map((cv) => ({ ...cv })), { username, isSpyMaster, ready: false }],
+        },
       };
     }
 
     case types.UPDATE_STORES:
       console.log('************', action.payload.redTeam.length);
-      console.log(state);
       return {
         ...state,
         messages: [...action.payload.messages],
@@ -101,13 +102,12 @@ const gameReducer = (state = initialState, action) => {
       };
     }
     case types.UPDATE_TEAMS:
-      const { user, teamKey } = action.payload;
       return {
         ...state,
-        [teamKey]: { ...state[teamKey], members: [...state[teamKey].members.map((cv) => ({ ...cv })), user] },
+        [action.payload.teamKey]: { ...state[action.payload.teamKey], members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user] },
       };
     default:
-      // console.log('default reducer run');
+      console.log('default reducer run');
       return state;
   }
 };
