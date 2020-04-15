@@ -43,14 +43,14 @@ const gameReducer = (state = initialState, action) => {
     }
     case types.JOIN_SESSION: {
       // return { sessionID: action.payload.sessionID, username: action.payload.username };
-      const { sessionID, username } = action.payload;
-      const redCount = state.redTeam.members.length;
-      const blueCount = state.blueTeam.members.length;
+      const { sessionID, username, data } = action.payload;
+      console.log('pre updated state \n', data);
+      const redCount = data.redTeam.length;
+      const blueCount = data.blueTeam.length;
       const team = blueCount > redCount ? 'red' : 'blue';
       const teamKey = `${team}Team`;
       const isSpyMaster = redCount === 0;
-      console.log('payload in JOIN_SESSION', action.payload);
-      console.log('isSpymaster: ', isSpyMaster);
+      console.log(`${username} is on ${teamKey}`);
       return {
         ...state,
         sessionID,
@@ -64,6 +64,7 @@ const gameReducer = (state = initialState, action) => {
 
     case types.UPDATE_STORES:
       console.log('************', action.payload.redTeam.length);
+      console.log('payload here \n', action.payload);
       return {
         ...state,
         messages: [...action.payload.messages],

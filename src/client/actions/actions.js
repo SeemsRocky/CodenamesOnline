@@ -10,7 +10,7 @@ export const populateBoard = (sessionID) => (dispatch) => fetch('/api/game/start
 })
   .then((response) => response.json())
   .then((data) => {
-    //console.log('this is my data! ', data);
+    // console.log('this is my data! ', data);
     dispatch({
       type: types.POPULATE_BOARD,
       payload: data,
@@ -50,7 +50,7 @@ export const newSession = (username) => (dispatch) => fetch('/api/session/create
 })
   .then((res) => res.json())
   .then((data) => {
-    //console.log('got data back: ', data);
+    // console.log('got data back: ', data);
     dispatch({
       type: types.NEW_SESSION,
       payload: { sessionID: data.roomID, username },
@@ -67,7 +67,7 @@ export const newSession = (username) => (dispatch) => fetch('/api/session/create
 export const updateStores = (room) => (dispatch) => fetch(`/api/session/update-stores?room=${room}`)
   .then((data) => data.json())
   .then((json) => {
-    //console.log('update stores data: ', json);
+    // console.log('update stores data: ', json);
     // const {
     //   messages, blueTeam, redTeam, gameBoard,
     // } = json;
@@ -78,10 +78,23 @@ export const updateStores = (room) => (dispatch) => fetch(`/api/session/update-s
     });
   });
 
-export const joinSession = (roomID, username) => ({
-  type: types.JOIN_SESSION,
-  payload: { sessionID: roomID, username },
-});
+export const joinSession = (roomID, username) => (dispatch) => fetch(`/api/session/update-stores?room=${roomID}`)
+  .then((data) => data.json())
+  .then((json) => {
+  // console.log('update stores data: ', json);
+  // const {
+  //   messages, blueTeam, redTeam, gameBoard,
+  // } = json;
+
+    dispatch({
+      type: types.JOIN_SESSION,
+      payload: { sessionID: roomID, username, data: json },
+    });
+  });
+// ({
+//   type: types.JOIN_SESSION,
+//   payload: { sessionID: roomID, username },
+// });
 
 export const updateTeams = (payload) => ({
   type: types.UPDATE_TEAMS,
