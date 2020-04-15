@@ -27,10 +27,9 @@ module.exports = {
               // console.log('result: ', result);
               const userID = uuidv4();
               db.query('INSERT INTO "user"(id, room, username, spymaster, team, ready) VALUES($1, $2, $3, $4, $5, $6)', [userID, roomID, username, true, 'blue', false])
-                .then((re) => {
-                  console.log('insert user result ', re);
-                  return res.status(200).json({ roomID });
-                })
+                .then((re) =>
+                  // console.log('insert user result ', re);
+                  res.status(200).json({ roomID }))
                 .catch((err) => {
                   console.log('insert user error ', err);
                 });
@@ -50,10 +49,9 @@ module.exports = {
           // console.log('result: ', result);
           const userID = uuidv4();
           db.query('INSERT INTO "user"(id, room, username, spymaster, team, ready) VALUES($1, $2, $3, $4, $5, $6)', [userID, roomID, username, true, 'blue', false])
-            .then((re) => {
-              console.log('insert user result ', re);
-              return res.status(200).json({ roomID });
-            })
+            .then((re) =>
+              // console.log('insert user result ', re);
+              res.status(200).json({ roomID }))
             .catch((err) => {
               console.log('insert user error ', err);
             });

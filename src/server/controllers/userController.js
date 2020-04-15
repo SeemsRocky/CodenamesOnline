@@ -23,7 +23,7 @@ module.exports = {
         console.log('userID ', userID);
         db.query('INSERT INTO "user"(id, room, username, spymaster, team, ready) VALUES($1, $2, $3, $4, $5, $6)', [userID, roomID, username, spymaster, team, false])
           .then((r) => {
-            console.log('insert user result ', r);
+            // console.log('insert user result ', r);
             res.status(200).json({ message: 'Successfully added user' });
           })
           .catch((err) => {
