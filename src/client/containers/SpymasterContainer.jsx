@@ -1,104 +1,54 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { populateBoard, setCurrentClue } from '../actions/actions';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentClue } from '../actions/actions';
 
+// const mapStateToProps = (state) =>
+// console.log('in map state to props, ', state);
+// ({
+//   sessionID: state.game.sessionID,
+//   socket: state.socket.socket,
+// });
+// populateBoard: (sessionID) => dispatch(populateBoard(sessionID)),
+// setCurrentClue: (text, num) => dispatch(setCurrentClue(text, num)),
+const SpymasterContainer = () => {
+  const dispatch = useDispatch();
+  const clueState = useSelector((store) => store.clue);
+  const [clue, updateClue] = useState('');
+  const [numGuesses, updateNum] = useState(0);
+  useEffect(() => {
+    console.log(clueState);
+  }, []);
+  const handleClueSubmit = (e) => {
+    e.preventDefault();
+    dispatch(setCurrentClue(clue, numGuesses));
+  };
 
-// FOR TESTING
-import LandingPageButton from '../components/buttons/LandingPageButton';
+  const handleClueChange = (e) => {
+    updateClue(e.target.value);
+  };
+  const handleNumGuessesChange = (e) => {
+    updateNum(e.target.value);
+  };
 
-const mapStateToProps = (state) =>
-  // console.log('in map state to props, ', state);
-  ({
-    sessionID: state.game.sessionID,
-    socket: state.socket.socket,
-  });
-const mapDispatchToProps = (dispatch) => ({
-  // makeNewSession: () => dispatch(makeNewSession()),
-  // joinSession: (currentSession, newUsername) => dispatch(joinSession(currentSession, newUsername)),
-  populateBoard: (sessionID) => dispatch(populateBoard(sessionID)),
-  // newClueInput: (text) => dispatch(newClueInput(text)),
-  // updateGuesses: (num) => dispatch(updateGuesses(num)),
-  setCurrentClue: (text, num) => dispatch(setCurrentClue(text, num)),
-});
+  return (
+    <section>
+      This is the Spymaster Container
+      <form onSubmit={handleClueSubmit}>
+        <input
+          type="text"
+          placeholder="Enter New Clue"
+          onChange={handleClueChange}
+        />
+        <input
+          type="number"
+          placeholder="Number of Words"
+          onChange={handleNumGuessesChange}
+          min="0"
+        />
+        <input type="submit" value="submit" />
+      </form>
+    </section>
+  );
+};
 
-class SpymasterContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newClue: '',
-      newGuesses: '',
-    };
-
-    this.handleNewClue = this.handleNewClue.bind(this);
-    this.handleNewGuesses = this.handleNewGuesses.bind(this);
-    this.handleBoardPopulate = this.handleBoardPopulate.bind(this);
-
-    // anymore methods, add here
-  }
-
-  handleBoardPopulate(socket, sessionID) {
-    socket.emit('request new board', { sessionID });
-  }
-
-  handleNewClue(newClueInput) {
-    // const newClueInput = event.target.value;
-    this.setState({
-      ...this.state,
-      newClue: newClueInput,
-    });
-  }
-
-  handleNewGuesses(newGuessesInput) {
-    // const newGuessesInput = event.target.value;
-    this.setState({
-      ...this.state,
-      newGuesses: newGuessesInput,
-    });
-  }
-
-  render() {
-    const {
-      sessionID, populateBoard, setCurrentClue, socket,
-    } = this.props;
-    return (
-      <section>
-        This is the Spymaster Container
-        <form onSubmit={() => {
-          event.preventDefault();
-          setCurrentClue(this.state.newClue, this.state.newGuesses);
-          this.setState({
-            ...this.state,
-            newClue: '',
-            newGuesses: '',
-          });
-        }}
-        >
-          <input
-            type="text"
-            placeholder="Enter New Clue"
-            onChange={(e) => {
-              const clue = e.target.value;
-              this.handleNewClue(clue);
-              // newClueInput(clue);
-            }}
-          />
-          <input
-            type="number"
-            placeholder="# of Words"
-            onChange={(e) => {
-              const guesses = e.target.value;
-              this.handleNewGuesses(guesses);
-              // updateGuesses(guesses);
-            }}
-          />
-          <input type="submit" value="submit" />
-        </form>
-        {/* <LandingPageButton buttonName="Start Session" buttonFunction={makeNewSession} /> */}
-        <LandingPageButton buttonName="Populate Board" buttonFunction={() => this.handleBoardPopulate(socket, sessionID)} />
-        {/* <LandingPageButton buttonName="Join Session" buttonFunction={() => joinSession(sessionID, 'Will')} /> */}
-      </section>
-    );
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SpymasterContainer);
+export default SpymasterContainer;

@@ -6,12 +6,16 @@ import SpymasterContainer from './SpymasterContainer';
 // import { newMessage } from '../actions/actions';
 
 const iSpyContainer = () => {
-  const { currUser: { username } } = useSelector((store) => store.game);
+  const { currUser: { isSpyMaster } } = useSelector((store) => store.game);
   return (
     <>
       <GameContainer />
       <ListContainer />
-      <SpymasterContainer />
+      {
+        isSpyMaster
+          ? <SpymasterContainer />
+          : <> </>
+      }
     </>
   );
 };
