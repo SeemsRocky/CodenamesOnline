@@ -3,19 +3,11 @@ import * as types from '../constants/ActionTypes';
 const initialState = {
   currentClue: '',
   guessesLeft: 0,
-  // newClue: '',
-  // newGuesses: 0,
 };
 
 const clueReducer = (state = initialState, action) => {
   console.log('action in clueReducer: ', action);
   switch (action.type) {
-    // case types.NEW_CLUE_INPUT:
-    //   console.log('in new clue input, clue reducer');
-    //   return {
-    //     ...state,
-    //     newClue: action.payload,
-    //   };
     case types.SET_CURRENT_CLUE:
       console.log('set current clue, clue reducer');
       return {

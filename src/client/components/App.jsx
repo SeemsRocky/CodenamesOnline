@@ -40,6 +40,10 @@ const App = () => {
       // dispatch(test());
       dispatch(selectTile(boardLocation));
     });
+    socket.on('set current clue', (({ clue, numGuesses }) => {
+      console.log('clue is ', clue);
+      console.log('with this many guesses ', numGuesses);
+    }));
   }
 
   return (
