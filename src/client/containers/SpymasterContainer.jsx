@@ -14,20 +14,20 @@ const SpymasterContainer = () => {
   const dispatch = useDispatch();
   const clueState = useSelector((store) => store.clue);
   const [clue, updateClue] = useState('');
-  const [numGuesses, updateNum] = useState(0);
+  const [guessesLeft, updateGuesses] = useState(0);
   useEffect(() => {
     console.log(clueState);
   }, []);
   const handleClueSubmit = (e) => {
     e.preventDefault();
-    dispatch(setCurrentClue(clue, numGuesses));
+    dispatch(setCurrentClue(clue, guessesLeft));
   };
 
   const handleClueChange = (e) => {
     updateClue(e.target.value);
   };
-  const handleNumGuessesChange = (e) => {
-    updateNum(e.target.value);
+  const handleGuessesLeftChange = (e) => {
+    updateGuesses(e.target.value);
   };
 
   return (
@@ -42,7 +42,7 @@ const SpymasterContainer = () => {
         <input
           type="number"
           placeholder="Number of Words"
-          onChange={handleNumGuessesChange}
+          onChange={handleGuessesLeftChange}
           min="0"
         />
         <input type="submit" value="submit" />
