@@ -34,7 +34,7 @@ module.exports = {
                   console.log('insert user error ', err);
                 });
             })
-            .catch((err) => console.log('error inserting session: ', err));
+            .catch((err) => console.log('Error inserting session: ', err));
         })
         .catch((err) => console.log('Error selecting from session: ', err));
     } else {
