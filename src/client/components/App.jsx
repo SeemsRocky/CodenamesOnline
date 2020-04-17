@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  newMessage, updateTeams, selectTile, populateBoardSocket,
+  newMessage, updateTeams, selectTile, populateBoardSocket, updateClue,
 } from '../actions/actions';
 import Dashboard from '../containers/Dashboard';
 
@@ -35,14 +35,10 @@ const App = () => {
     });
 
     socket.on('tile selected', ({ affiliation, boardLocation }) => {
-      console.log(affiliation);
-      console.log('a tile has been picked');
-      // dispatch(test());
       dispatch(selectTile(boardLocation));
     });
-    socket.on('set current clue', (({ clue, numGuesses }) => {
-      console.log('clue is ', clue);
-      console.log('with this many guesses ', numGuesses);
+    socket.on('update clue', (({ currentClue, guessesLeft }) => {
+      dispatch(updateClue(currentClue, guessesLeft));
     }));
   }
 
