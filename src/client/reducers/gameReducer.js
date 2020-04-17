@@ -74,9 +74,7 @@ const gameReducer = (state = initialState, action) => {
         currUser: {
           ...state.currUser,
           isSpyMaster: action.payload.redTeam.length === 0,
-          // team: action.payload.redTeam.length === action.payload.blueTeam.length ? 'red' : 'blue',
         },
-
       };
     case types.NEW_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
@@ -85,13 +83,6 @@ const gameReducer = (state = initialState, action) => {
       return {
         ...state,
         gameBoard: action.payload,
-      };
-    case types.SET_CURRENT_CLUE:
-      console.log('set current clue, game reducer');
-      return {
-        ...state,
-        currentClue: action.payload.clue,
-        guessesLeft: action.payload.guesses,
       };
     case types.SELECT_TILE: {
       const newGameBoard = JSON.parse(JSON.stringify(state.gameBoard));

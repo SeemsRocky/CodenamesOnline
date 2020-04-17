@@ -8,19 +8,18 @@ const initialState = {
 const clueReducer = (state = initialState, action) => {
   console.log('action in clueReducer: ', action);
   switch (action.type) {
-    case types.SET_CURRENT_CLUE:
-      console.log('set current clue, clue reducer');
+    case types.UPDATE_CLUE:
+      console.log('update clue and number of guesses in clue reducer');
       return {
         ...state,
-        currentClue: action.payload.clue,
-        guessesLeft: action.payload.guesses,
+        currentClue: action.payload.currentClue,
+        guessesLeft: action.payload.guessesLeft,
       };
-    case types.SELECT_TILE:
     case types.UPDATE_GUESSES:
       console.log('update guesses, clue reducer');
       return {
         ...state,
-        newGuesses: action.payload,
+        guessesLeft: action.payload.guessesLeft,
       };
     default:
       // console.log('default reducer run, clue reducer');

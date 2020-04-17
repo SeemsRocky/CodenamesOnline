@@ -12,15 +12,18 @@ import { setCurrentClue } from '../actions/actions';
 // setCurrentClue: (text, num) => dispatch(setCurrentClue(text, num)),
 const SpymasterContainer = () => {
   const dispatch = useDispatch();
-  const clueState = useSelector((store) => store.clue);
-  const [clue, updateClue] = useState('');
+  const { currTeamTurn, currUser: { team } } = useSelector((store) => store.game);
+  const { socket } = useSelector((store) => store.socket);
+
+  const [hasClueChanged, updateHasClueChanged] = useState(false);
+  const [currentClue, updateClue] = useState('');
   const [guessesLeft, updateGuesses] = useState(0);
-  useEffect(() => {
-    console.log(clueState);
-  }, []);
+
   const handleClueSubmit = (e) => {
     e.preventDefault();
-    dispatch(setCurrentClue(clue, guessesLeft));
+    updateHasClueChanged(true);
+    dispatch(setCurrentClue(currentClue, guessesLeft));
+    socket.emit('clue updated', { currentClue, guessesLeft });
   };
 
   const handleClueChange = (e) => {
@@ -31,7 +34,7 @@ const SpymasterContainer = () => {
   };
 
   return (
-    <section>
+    <section id="SpymasterContainer">
       This is the Spymaster Container
       <form onSubmit={handleClueSubmit}>
         <input
@@ -45,7 +48,8 @@ const SpymasterContainer = () => {
           onChange={handleGuessesLeftChange}
           min="0"
         />
-        <input type="submit" value="submit" />
+        {/* disable after clueUpdate and not team */}
+        <input type="submit" value="submit" disabled={hasClueChanged && team !== currTeamTurn} />
       </form>
     </section>
   );

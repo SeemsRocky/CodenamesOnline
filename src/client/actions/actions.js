@@ -120,16 +120,21 @@ export const selectTile = (boardLocation) => ({
   },
 });
 
-export const changeTurn = () => ({
+export const changeTurn = (currTeamTurn) => ({
   // NEED A THUNK
   type: types.CHANGE_TURN,
-  payload: 'filler',
+  payload: {
+    currTeamTurn,
+  },
 });
 
-export const submitClue = () => ({
+export const updateClue = (currentClue, guessesLeft) => ({
   // NEED A THUNK
-  type: types.SUBMIT_CLUE,
-  payload: 'filler',
+  type: types.UPDATE_CLUE,
+  payload: {
+    currentClue,
+    guessesLeft,
+  },
 });
 
 export const newMessage = (payload) => ({

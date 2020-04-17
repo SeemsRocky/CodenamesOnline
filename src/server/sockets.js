@@ -63,6 +63,10 @@ module.exports = {
           })
           .catch((err) => console.log('error in updating tile: ', err));
       });
+      socket.on('clue updated', ({ currentClue, guessesLeft }) => {
+        console.log('socket detected that clue has updated ', currentClue, guessesLeft);
+        io.to(room).emit('update clue', ({ currentClue, guessesLeft }));
+      });
       socket.on('request new board', ({ sessionID: session_id }) => {
         console.log('in request new board socket action');
 
