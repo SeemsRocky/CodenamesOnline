@@ -1,71 +1,52 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Tile from './Tile';
-
+import React from 'react';
+import { useSelector } from 'react-redux';
+import TileRow from './TileRow';
 
 // import styles from '../stylesheet/board.css';
 
-const mapStateToProps = (state) => ({
-  gameBoard: state.game.gameBoard,
-  sessionID: state.game.sessionID,
-  socket: state.socket.socket,
-  currTeamTurn: state.game.currTeamTurn,
-  currUser: state.game.currUser,
-  redTeam: state.game.redTeam,
-  blueTeam: state.game.blueTeam,
-});
 
-class Board extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-    // anymore methods, add here
-    this.handleTileClick = this.handleTileClick.bind(this);
-  }
+const Board = () => {
+  const { socket } = useSelector((store) => store.socket);
+  const {
+    gameBoard,
+    sessionID,
+    currUser,
+    currTeamTurn,
+    guessesLeft,
+  } = useSelector((store) => store.game);
 
-  handleTileClick(socket, sessionID, affiliation, boardLocation) {
-    const { currUser, currTeamTurn } = this.props;
+  const handleTileClick = (affiliation, boardLocation) => {
     const { team } = currUser;
-    console.log(currUser);
-    console.log(team, currTeamTurn);
-    console.log(this.props);
-    if (currTeamTurn === team) {
-      socket.emit('tile clicked', { team, boardLocation, sessionID });
+    if (currTeamTurn === team && guessesLeft > 0) {
+      console.log('we made it thru button click');
+      socket.emit('tile clicked', {
+        affiliation, team, boardLocation, sessionID,
+      });
     }
-  }
+  };
 
-  render() {
-    const {
-      gameBoard, socket, sessionID,
-    } = this.props;
-    // console.log('this is gameboard: ', gameBoard);
-    return (
-      <>
-        <h2>This is the board</h2>
-        <section className="game-board">
-          {gameBoard && (
-            <>
-              <section className="game-row" id="row-1">
-                {gameBoard.slice(0, 5).map((el, idx) => <Tile key={`word-tile-${idx + (5 * 0)}`} selected={el.selected} boardLocation={idx + (5 * 0)} sessionID={sessionID} socket={socket} wordId={el.id} word={el.word} affiliation={el.affiliation} handleTileClick={this.handleTileClick} />)}
-              </section>
-              <section className="game-row" id="row-2">
-                {gameBoard.slice(5, 10).map((el, idx) => <Tile key={`word-tile-${idx + (5 * 1)}`} selected={el.selected} boardLocation={idx + (5 * 1)} sessionID={sessionID} socket={socket} wordId={el.id} word={el.word} affiliation={el.affiliation} handleTileClick={this.handleTileClick} />)}
-              </section>
-              <section className="game-row" id="row-3">
-                {gameBoard.slice(10, 15).map((el, idx) => <Tile key={`word-tile-${idx + (5 * 2)}`} selected={el.selected} boardLocation={idx + (5 * 2)} sessionID={sessionID} socket={socket} wordId={el.id} word={el.word} affiliation={el.affiliation} handleTileClick={this.handleTileClick} />)}
-              </section>
-              <section className="game-row" id="row-4">
-                {gameBoard.slice(15, 20).map((el, idx) => <Tile key={`word-tile-${idx + (5 * 3)}`} selected={el.selected} boardLocation={idx + (5 * 3)} sessionID={sessionID} socket={socket} wordId={el.id} word={el.word} affiliation={el.affiliation} handleTileClick={this.handleTileClick} />)}
-              </section>
-              <section className="game-row" id="row-5">
-                {gameBoard.slice(20, 25).map((el, idx) => <Tile key={`word-tile-${idx + (5 * 4)}`} selected={el.selected} boardLocation={idx + (5 * 4)} sessionID={sessionID} socket={socket} wordId={el.id} word={el.word} affiliation={el.affiliation} handleTileClick={this.handleTileClick} />)}
-              </section>
-            </>
-          )}
-        </section>
-      </>
-    );
-  }
-}
+  const displayBoard = () => {
+    const board = [];
+    for (let i = 0; i < 5; i += 1) {
+      board.push(
+        <TileRow
+          handleTileClick={handleTileClick}
+          rowNum={i}
+          words={gameBoard.slice(i * 5, (i * 5) + 5)}
+        />,
+      );
+    }
+    return board;
+  };
 
-export default connect(mapStateToProps)(Board);
+  return (
+    <>
+      <h2>This is the board</h2>
+      <section className="game-board">
+        {gameBoard && displayBoard()}
+      </section>
+    </>
+  );
+};
+
+export default Board;
