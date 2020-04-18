@@ -1,6 +1,6 @@
 import * as types from '../constants/ActionTypes';
 
-// populateBoard thunk
+
 export const populateBoard = (sessionID) => (dispatch) => fetch('/api/game/start', {
   method: 'POST',
   headers: {
@@ -8,7 +8,7 @@ export const populateBoard = (sessionID) => (dispatch) => fetch('/api/game/start
   },
   body: JSON.stringify({ session_id: sessionID }),
 })
-  .then((response) => response.json())
+  .then((res) => res.json())
   .then((data) => {
     // console.log('this is my data! ', data);
     dispatch({
@@ -25,22 +25,7 @@ export const populateBoardSocket = (newBoard) => ({
   payload: newBoard,
 });
 
-// export const newClueInput = (newClue) => ({
-//   type: types.NEW_CLUE_INPUT,
-//   payload: newClue,
-// });
-
-export const setCurrentClue = (clue, guesses) => ({
-  type: types.SET_CURRENT_CLUE,
-  payload: { clue, guesses },
-});
-
-// export const updateGuesses = (guesses) => ({
-//   type: types.UPDATE_GUESSES,
-//   payload: guesses,
-// });
-
-// SHOULD THIS BE A POST REQ? WHEN DOES FIRST USER ENTER NAME?
+// SESSIONS
 export const newSession = (username) => (dispatch) => fetch('/api/session/create', {
   method: 'POST',
   headers: {
@@ -58,15 +43,21 @@ export const newSession = (username) => (dispatch) => fetch('/api/session/create
   })
   .catch((e) => console.log('error caught: ', e));
 
-// export const joinSessionAction = () => ({
-//   // NEED A THUNK
-//   type: types.JOIN_SESSION,
-//   payload: 'filler',
-// });
+export const joinSession = (roomID, username) => (dispatch) => fetch(`/api/session/update-stores?room=${roomID}`)
+  .then((res) => res.json())
+  .then((data) => {
+    console.log('why are we in here twice');
 
+    dispatch({
+      type: types.JOIN_SESSION,
+      payload: { sessionID: roomID, username, data },
+    });
+  });
+
+// ////////// UPDATING STATE
 export const updateStores = (room) => (dispatch) => fetch(`/api/session/update-stores?room=${room}`)
-  .then((data) => data.json())
-  .then((json) => {
+  .then((res) => res.json())
+  .then((data) => {
     // console.log('update stores data: ', json);
     // const {
     //   messages, blueTeam, redTeam, gameBoard,
@@ -74,32 +65,15 @@ export const updateStores = (room) => (dispatch) => fetch(`/api/session/update-s
 
     dispatch({
       type: types.UPDATE_STORES,
-      payload: json,
+      payload: data,
     });
   });
-
-export const joinSession = (roomID, username) => (dispatch) => fetch(`/api/session/update-stores?room=${roomID}`)
-  .then((data) => data.json())
-  .then((json) => {
-  // console.log('update stores data: ', json);
-  // const {
-  //   messages, blueTeam, redTeam, gameBoard,
-  // } = json;
-
-    dispatch({
-      type: types.JOIN_SESSION,
-      payload: { sessionID: roomID, username, data: json },
-    });
-  });
-// ({
-//   type: types.JOIN_SESSION,
-//   payload: { sessionID: roomID, username },
-// });
 
 export const updateTeams = (payload) => ({
   type: types.UPDATE_TEAMS,
   payload,
 });
+// /////////////// GAME STATE
 export const startGame = () => ({
   // NEED A THUNK
   type: types.START_GAME,
@@ -120,19 +94,27 @@ export const selectTile = (boardLocation) => ({
   },
 });
 
-export const changeTurn = (currTeamTurn) => ({
+export const changeTurn = (nextTeamTurn) => ({
   // NEED A THUNK
   type: types.CHANGE_TURN,
   payload: {
-    currTeamTurn,
+    nextTeamTurn,
   },
 });
 
+// ////////////////////////////// CLUES
 export const updateClue = (currentClue, guessesLeft) => ({
   // NEED A THUNK
   type: types.UPDATE_CLUE,
   payload: {
     currentClue,
+    guessesLeft,
+  },
+});
+
+export const updateGuesses = (guessesLeft) => ({
+  type: types.UPDATE_GUESSES,
+  payload: {
     guessesLeft,
   },
 });
@@ -161,10 +143,4 @@ export const createUser = () => ({
   // NEED A THUNK
   type: types.CREATE_USER,
   payload: 'filler',
-});
-
-// TEST
-export const testFunc = (testMsg) => ({
-  type: types.TEST,
-  payload: testMsg,
 });

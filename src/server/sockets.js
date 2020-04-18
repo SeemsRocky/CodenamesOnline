@@ -10,7 +10,7 @@ module.exports = {
       const room = socket.handshake.query.r_var;
       socket.join(room);
       socket.on('join session', (username) => {
-        console.log('recieved from client: ', username, room);
+        console.log('received from client: ', username, room);
         db.query(`SELECT * FROM "user" WHERE room='${room}'`)
           .then((result) => {
             const [blue, red] = result.rows.reduce((acc, row) => {
@@ -25,6 +25,7 @@ module.exports = {
             else team = 'blue';
             db.query('INSERT INTO "user"(id, room, username, spymaster, team, ready) VALUES($1, $2, $3, $4, $5, $6)', [userID, room, username, spymaster, team, false])
               .then(() => {
+                console.log('does this db req trigger twice');
                 io.to(room).emit('joined', {
                   user: {
                     username, isSpyMaster: spymaster, ready: false,
@@ -52,20 +53,27 @@ module.exports = {
           .then(() => io.to(room).emit('new message', { username, text }))
           .catch((err) => console.log('error inserting message to DB: ', err));
       });
-      socket.on('tile clicked', ({ affiliation, boardLocation, team, sessionID }) => {
+      socket.on('tile clicked', ({
+        affiliation, boardLocation, team, sessionID,
+      }) => {
         // DB query
         console.log(affiliation);
         console.log('inside tile picked action, in backend');
         db.query(`UPDATE board SET selected=true WHERE room='${sessionID}' AND location=${boardLocation}`)
           .then((res) => {
             // console.log('changed word status: ', res);
-            io.to(room).emit('tile selected', ({ affiliation, boardLocation, team, sessionID }));
+            io.to(room).emit('tile selected', ({
+              affiliation, boardLocation, team, sessionID,
+            }));
           })
           .catch((err) => console.log('error in updating tile: ', err));
       });
       socket.on('clue updated', ({ currentClue, guessesLeft }) => {
         console.log('socket detected that clue has updated ', currentClue, guessesLeft);
         io.to(room).emit('update clue', ({ currentClue, guessesLeft }));
+      });
+      socket.on('change turn', ({ nextTeamTurn }) => {
+        io.to(room).emit('update turn', ({ nextTeamTurn }));
       });
       socket.on('request new board', ({ sessionID: session_id }) => {
         console.log('in request new board socket action');

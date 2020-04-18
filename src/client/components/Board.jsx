@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import TileRow from './TileRow';
-
 // import styles from '../stylesheet/board.css';
 
 
@@ -19,6 +18,11 @@ const Board = () => {
     const { team } = currUser;
     if (currTeamTurn === team && guessesLeft > 0) {
       console.log('we made it thru button click');
+      if (affiliation !== currTeamTurn || guessesLeft === 1) {
+        console.log('do we detect necessary team change?')
+        const nextTeam = team === 'blue' ? 'red' : 'blue';
+        socket.emit('change turn', { nextTeamTurn: nextTeam });
+      }
       socket.emit('tile clicked', {
         affiliation, team, boardLocation, sessionID,
       });
@@ -30,6 +34,7 @@ const Board = () => {
     for (let i = 0; i < 5; i += 1) {
       board.push(
         <TileRow
+          key={`Tilerow-${i}`}
           handleTileClick={handleTileClick}
           rowNum={i}
           words={gameBoard.slice(i * 5, (i * 5) + 5)}

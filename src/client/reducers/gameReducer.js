@@ -19,7 +19,7 @@ const initialState = {
   gameBoard: mockGameBoard,
   messages: [],
   currentClue: '',
-  guessesLeft: 0,
+  guessesLeft: -1,
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -87,11 +87,12 @@ const gameReducer = (state = initialState, action) => {
       newGameBoard[action.payload.boardLocation].selected = true;
       return {
         ...state,
-        guessesLeft: state.guessesLeft - 1 >= 0 ? state.guessesLeft - 1 : 0,
+        guessesLeft: state.guessesLeft - 1,
         gameBoard: newGameBoard,
       };
     }
     case types.UPDATE_TEAMS:
+      console.log('state before updating teams ', state);
       return {
         ...state,
         [action.payload.teamKey]: { ...state[action.payload.teamKey], members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user] },
@@ -113,7 +114,9 @@ const gameReducer = (state = initialState, action) => {
     case types.CHANGE_TURN:
       return {
         ...state,
-        currTeamTurn: action.payload.team,
+        currTeamTurn: action.payload.nextTeamTurn,
+        guessesLeft: -1,
+        currentClue: '',
       };
     default:
       console.log('default reducer run');
