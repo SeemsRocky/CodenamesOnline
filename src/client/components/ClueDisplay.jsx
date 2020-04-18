@@ -2,8 +2,11 @@ import React from 'react';
 
 const ClueDisplay = ({ currentClue, guessesLeft }) => (
   <section>
-    {currentClue}
-    {guessesLeft}
+    {
+      currentClue
+        ? <span>{`${currentClue} ${guessesLeft}`}</span>
+        : <> </>
+    }
   </section>
 );
 
