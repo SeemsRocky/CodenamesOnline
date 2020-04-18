@@ -1,33 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentClue } from '../actions/actions';
+import { updateClue } from '../actions/actions';
 
-// const mapStateToProps = (state) =>
-// console.log('in map state to props, ', state);
-// ({
-//   sessionID: state.game.sessionID,
-//   socket: state.socket.socket,
-// });
-// populateBoard: (sessionID) => dispatch(populateBoard(sessionID)),
-// setCurrentClue: (text, num) => dispatch(setCurrentClue(text, num)),
 const SpymasterContainer = () => {
   const dispatch = useDispatch();
   const { currTeamTurn, currUser: { team } } = useSelector((store) => store.game);
   const { socket } = useSelector((store) => store.socket);
 
-  const [hasClueChanged, updateHasClueChanged] = useState(false);
-  const [currentClue, updateClue] = useState('');
+  // const [hasClueUpdated, setClueUpdate] = useState(false);
+  const [currentClue, updateCurrentClue] = useState('');
   const [guessesLeft, updateGuesses] = useState(0);
 
   const handleClueSubmit = (e) => {
     e.preventDefault();
-    updateHasClueChanged(true);
-    dispatch(setCurrentClue(currentClue, guessesLeft));
-    socket.emit('clue updated', { currentClue, guessesLeft });
+    // TODO
+    // can only submit when its their teams turn and havent updated yet
+    if (currTeamTurn === team) {
+      dispatch(updateClue(currentClue, guessesLeft));
+      socket.emit('clue updated', { currentClue, guessesLeft });
+    }
   };
 
   const handleClueChange = (e) => {
-    updateClue(e.target.value);
+    updateCurrentClue(e.target.value);
   };
   const handleGuessesLeftChange = (e) => {
     updateGuesses(e.target.value);
@@ -48,8 +43,7 @@ const SpymasterContainer = () => {
           onChange={handleGuessesLeftChange}
           min="0"
         />
-        {/* disable after clueUpdate and not team */}
-        <input type="submit" value="submit" disabled={hasClueChanged && team !== currTeamTurn} />
+        <input type="submit" value="submit" />
       </form>
     </section>
   );
