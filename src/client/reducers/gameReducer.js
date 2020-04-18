@@ -20,8 +20,6 @@ const initialState = {
   messages: [],
   currentClue: '',
   guessesLeft: 0,
-  // newGuesses: 0,
-  // newClue: '',
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -97,6 +95,25 @@ const gameReducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.teamKey]: { ...state[action.payload.teamKey], members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user] },
+      };
+
+    case types.UPDATE_CLUE:
+      console.log('update clue and number of guesses in clue reducer');
+      return {
+        ...state,
+        currentClue: action.payload.currentClue,
+        guessesLeft: action.payload.guessesLeft,
+      };
+    case types.UPDATE_GUESSES:
+      console.log('update guesses, clue reducer');
+      return {
+        ...state,
+        guessesLeft: action.payload.guessesLeft,
+      };
+    case types.CHANGE_TURN:
+      return {
+        ...state,
+        currTeamTurn: action.payload.team,
       };
     default:
       console.log('default reducer run');
