@@ -13,7 +13,7 @@ class Word {
 
 const mockGameBoard = [
   new Word('time', 1, assassin),
-  new Word('OMEGALUL', 2, 'blue'),
+  new Word('chocolate', 2, BLUE_TEAM),
   new Word('year', 3, BLUE_TEAM),
   new Word('way', 4, BLUE_TEAM),
   new Word('day', 5, BLUE_TEAM),
