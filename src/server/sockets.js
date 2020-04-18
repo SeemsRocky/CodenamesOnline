@@ -52,14 +52,14 @@ module.exports = {
           .then(() => io.to(room).emit('new message', { username, text }))
           .catch((err) => console.log('error inserting message to DB: ', err));
       });
-      socket.on('tile clicked', ({ affiliation, boardLocation, sessionID }) => {
+      socket.on('tile clicked', ({ affiliation, boardLocation, team, sessionID }) => {
         // DB query
         console.log(affiliation);
         console.log('inside tile picked action, in backend');
         db.query(`UPDATE board SET selected=true WHERE room='${sessionID}' AND location=${boardLocation}`)
           .then((res) => {
             // console.log('changed word status: ', res);
-            io.to(room).emit('tile selected', ({ affiliation, boardLocation, sessionID }));
+            io.to(room).emit('tile selected', ({ affiliation, boardLocation, team, sessionID }));
           })
           .catch((err) => console.log('error in updating tile: ', err));
       });

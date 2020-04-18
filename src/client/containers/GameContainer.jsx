@@ -5,14 +5,21 @@ import ChatboxContainer from './ChatboxContainer';
 import ClueDisplay from '../components/ClueDisplay';
 
 const GameContainer = () => {
-  const { sessionID } = useSelector((store) => store.game);
-  const { guessesLeft, currentClue } = useSelector((store) => store.clue);
+  const {
+    sessionID,
+    currTeamTurn,
+    guessesLeft,
+    currentClue,
+  } = useSelector((store) => store.game);
   return (
     <section className="game-container">
       <h2>
         {`Welcome to iSpy! Session: ${sessionID || 'TBD'}`}
       </h2>
       <ClueDisplay guessesLeft={guessesLeft} currentClue={currentClue} />
+      <p>
+        {`${currTeamTurn} team's turn`}
+      </p>
       <section id="GameChatContainer">
         <Board />
         <ChatboxContainer />
