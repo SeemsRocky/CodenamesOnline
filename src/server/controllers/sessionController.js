@@ -61,7 +61,7 @@ module.exports = {
   },
   getData(req, res) {
     const room = req.url.split('=')[1];
-    console.log(room);
+    console.log('getting data from ', room);
     const queryArr = [
       db.query(`SELECT board.selected,board.affiliation,board.location,dictionary.word
       FROM board
