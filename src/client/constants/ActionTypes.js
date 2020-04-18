@@ -16,5 +16,3 @@ export const NEW_CLUE_INPUT = 'NEW_CLUE_INPUT';
 export const SET_CURRENT_CLUE = 'SET_CURRENT_CLUE';
 export const UPDATE_GUESSES = 'UPDATE_GUESSES';
 export const UPDATE_STORES = 'UPDATE_STORES';
-// TEST
-export const TEST = 'TEST';
