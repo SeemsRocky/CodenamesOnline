@@ -17,9 +17,7 @@ const Board = () => {
   const handleTileClick = (affiliation, boardLocation) => {
     const { team } = currUser;
     if (currTeamTurn === team && guessesLeft > 0) {
-      console.log('we made it thru button click');
       if (affiliation !== currTeamTurn || guessesLeft === 1) {
-        console.log('do we detect necessary team change?')
         const nextTeam = team === 'blue' ? 'red' : 'blue';
         socket.emit('change turn', { nextTeamTurn: nextTeam });
       }
@@ -46,7 +44,6 @@ const Board = () => {
 
   return (
     <>
-      <h2>This is the board</h2>
       <section className="game-board">
         {gameBoard && displayBoard()}
       </section>

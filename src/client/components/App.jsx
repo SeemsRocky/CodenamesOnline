@@ -8,8 +8,8 @@ import {
   populateBoardSocket,
   updateClue,
   changeTurn,
-  updateGuesses,
 } from '../actions/actions';
+
 import Dashboard from '../containers/Dashboard';
 
 const App = () => {
