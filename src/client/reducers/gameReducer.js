@@ -93,10 +93,31 @@ const gameReducer = (state = initialState, action) => {
     }
     case types.UPDATE_TEAMS:
       console.log('state before updating teams ', state);
+      if (action.payload.prevTeam) {
+        return {
+          ...state,
+          currUser: {
+            ...state.currUser,
+            team: action.payload.currTeam,
+          },
+          [action.payload.teamKey]: {
+            ...state[action.payload.teamKey],
+            members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user],
+          },
+          [action.payload.prevTeam]: {
+            ...state[action.payload.prevTeam],
+            members: [...state[action.payload.prevTeam].members.filter((member) => member.username !== action.payload.user.username)],
+          },
+        };
+      }
       return {
         ...state,
-        [action.payload.teamKey]: { ...state[action.payload.teamKey], members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user] },
+        [action.payload.teamKey]: {
+          ...state[action.payload.teamKey],
+          members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user],
+        },
       };
+
 
     case types.UPDATE_CLUE:
       console.log('update clue and number of guesses in clue reducer');

@@ -31,6 +31,7 @@ module.exports = {
                     username, isSpyMaster: spymaster, ready: false,
                   },
                   teamKey: `${team}Team`,
+                  prevTeam: '',
                 });
               })
               .catch((err) => {
@@ -39,6 +40,26 @@ module.exports = {
           })
           .catch((err) => {
             console.log('error selecting users ', err);
+          });
+      });
+      socket.on('team change', ({
+        username, sessionID, switchToTeam, prevTeam,
+      }) => {
+        console.log(username, switchToTeam, sessionID);
+        db.query(`UPDATE "user" SET team='${switchToTeam}' WHERE room='${sessionID}' AND username='${username}' RETURNING username,spymaster`)
+          .then(({ rows }) => {
+            const { spymaster } = rows[0];
+            io.to(sessionID).emit('changed team', {
+              user: {
+                username, isSpyMaster: spymaster, ready: false,
+              },
+              teamKey: `${switchToTeam}Team`,
+              currTeam: switchToTeam,
+              prevTeam,
+            });
+          })
+          .catch((err) => {
+            console.log('error updating team in lobby ', err);
           });
       });
       socket.on('ready', (username) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import ISpyContainer from './iSpyContainer';
+import Lobby from '../components/Lobby';
 import FormContainer from './FormContainer';
 
 const Dashboard = () => {
@@ -15,7 +15,7 @@ const Dashboard = () => {
     {
       path: '/session/:sessionID',
       exact: true,
-      main: () => <ISpyContainer />,
+      main: () => <Lobby />,
     },
   ];
   return (
