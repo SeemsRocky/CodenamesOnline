@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Board from '../components/Board';
-import ChatboxContainer from './ChatboxContainer';
+import Chatbox from '../components/Chatbox';
 import ClueDisplay from '../components/ClueDisplay';
 
 const GameContainer = () => {
@@ -22,7 +22,7 @@ const GameContainer = () => {
       </p>
       <section id="GameChatContainer">
         <Board />
-        <ChatboxContainer />
+        <Chatbox />
       </section>
     </section>
   );

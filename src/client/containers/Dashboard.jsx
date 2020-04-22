@@ -19,8 +19,7 @@ const Dashboard = () => {
     },
   ];
   return (
-    <div>
-      <div>{sessionID}</div>
+    <main>
       {routes.map((route) => (
         <Route
           key={route.path}
@@ -29,7 +28,7 @@ const Dashboard = () => {
           component={route.main}
         />
       ))}
-    </div>
+    </main>
   );
 };
 
