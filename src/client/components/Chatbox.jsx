@@ -3,27 +3,25 @@ import { useSelector } from 'react-redux';
 import Message from './Message';
 
 const Chatbox = () => {
-  const {
-    messages, currUser: { username },
-  } = useSelector((store) => store.game);
+  const { messages, currUser: { username } } = useSelector((store) => store.game);
   const { socket } = useSelector((store) => store.socket);
+  const [msg, setText] = useState('');
 
-  const [text, setText] = useState('');
   const handleKeyPress = (event) => {
-    if (event.keyCode === 13 && text.length > 0) {
+    if (event.which === 13 && msg.length > 0) {
       console.log('EMITTING MESSAGE');
-      socket.emit('message', { text, username });
+      socket.emit('message', { msg, username });
       setText('');
+      event.target.focus();
     }
   };
-  const messageArr = messages.map((msgObj) => <Message text={msgObj.text} username={msgObj.user} />);
 
   return (
-    <section>
+    <section className="chatbox-container">
       <div id="messageContainer">
-        {messageArr}
+        {messages.map(({ user, text }) => <Message key={user.concat((new Date().getTime().toString()))} text={text} username={user} />)}
       </div>
-      <input onKeyUp={handleKeyPress} value={text} onChange={(e) => setText(e.target.value)} />
+      <input id="userInput" onKeyPress={handleKeyPress} value={msg} onChange={(e) => setText(e.target.value)} />
     </section>
   );
 };
