@@ -1,20 +1,33 @@
-.game-board {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr .5fr;
-  grid-template-rows: auto auto auto auto auto auto;
-  grid-template-areas: 
-  "row-1 row-1 row-1 row-1 row-1 chatbox-container"
-  "row-2 row-2 row-2 row-2 row-2 chatbox-container"
-  "row-3 row-3 row-3 row-3 row-3 chatbox-container"
-  "row-4 row-4 row-4 row-4 row-4 chatbox-container"
-  "row-5 row-5 row-5 row-5 row-5 chatbox-container";
-}
-
 .game-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 
+.tile {
+  button {
+    background-color: gray;
+    color: white;
+    width: 150px;
+    height: 100px;
+    font-size: 1.2rem;
+  }
+  .unselected-tile-button {
+    background-color: gray;
+  }
+  .red-tile-button {
+    background-color: red;
+  }
+  .blue-tile-button {
+    background-color: blue;
+  }
+  .neutral-tile-button {
+    background-color: papayawhip;
+  }
+  .assassin-tile-button {
+    background-color: black;
+  }
+
+}
 #row-1 {
   grid-area: row-1;
 }
@@ -35,28 +48,19 @@
   grid-area: row-5;
 }
 
-.tile {
-  button {
-    background-color: gray;
-    color: white;
-    width: 100%;
-    height: 50px;
-    font-size: 1.2rem;
-  }
-  .unselected-tile-button {
-    background-color: gray;
-  }
-  .red-tile-button {
-    background-color: red;
-  }
-  .blue-tile-button {
-    background-color: blue;
-  }
-  .neutral-tile-button {
-    background-color: papayawhip;
-  }
-  .assassin-tile-button {
-    background-color: black;
-  }
-
+.game-board {
+  display: grid;
+  grid-area: board;
+  grid-template-columns: repeat(5,1fr);
+  grid-template-rows: repeat(5,1fr);
+  grid-template-areas:
+  "row-1 row-1 row-1 row-1 row-1"
+  "row-2 row-2 row-2 row-2 row-2"
+  "row-3 row-3 row-3 row-3 row-3"
+  "row-4 row-4 row-4 row-4 row-4"
+  "row-5 row-5 row-5 row-5 row-5";
+  padding: 10px;
+  height:500px;
+  width:750px;
 }
+

@@ -1,4 +1,22 @@
-.message{
-    display:grid;
-    grid-template-columns: 30% 70%;
+#userInput{
+    position:absolute;
+    border: .5px solid red;
+    bottom:0;
+    height:10%;
+    width:100%;
+}
+.chatbox-container{
+    position:relative;
+    border: 0.5px solid black;
+    grid-area:chatbox;
+    height: 500px;
+    width: 300px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+.messageContainer{
+    height:90%;
+    max-height:90%;
+    width:100%;
+    overflow-y: auto;
 }
