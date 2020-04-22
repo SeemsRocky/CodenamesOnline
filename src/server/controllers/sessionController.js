@@ -8,7 +8,7 @@ const genRoomID = () => {
   return result;
 };
 
-const cache = {};
+const cache = {}; // could just be another db table
 module.exports = {
   create(req, res) {
     const { username } = req.body;
