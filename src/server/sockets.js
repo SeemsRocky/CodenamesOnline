@@ -18,17 +18,14 @@ module.exports = {
               else acc[1] += 1;
               return acc;
             }, [0, 0]);
-            let team;
-            const spymaster = !!(red === 0 || blue === 0);
+            const team = blue > red ? 'red' : 'blue';
             const userID = uuidv4();
-            if (blue > red) team = 'red';
-            else team = 'blue';
-            db.query('INSERT INTO "user"(id, room, username, spymaster, team, ready) VALUES($1, $2, $3, $4, $5, $6)', [userID, room, username, spymaster, team, false])
-              .then(() => {
-                console.log('does this db req trigger twice');
+
+            db.query('INSERT INTO "user"(id, room, username, spymaster, team, ready) VALUES($1, $2, $3, $4, $5, $6) RETURNING id', [userID, room, username, false, team, false])
+              .then((data) => {
                 io.to(room).emit('joined', {
                   user: {
-                    username, isSpyMaster: spymaster, ready: false,
+                    username, userID: data.rows[0].id, isSpyMaster: false, ready: false,
                   },
                   teamKey: `${team}Team`,
                   prevTeam: '',
@@ -43,18 +40,17 @@ module.exports = {
           });
       });
       socket.on('team change', ({
-        username, sessionID, switchToTeam, prevTeam,
+        username, changeToTeam, prevTeam,
       }) => {
-        console.log(username, switchToTeam, sessionID);
-        db.query(`UPDATE "user" SET team='${switchToTeam}' WHERE room='${sessionID}' AND username='${username}' RETURNING username,spymaster`)
-          .then(({ rows }) => {
-            const { spymaster } = rows[0];
-            io.to(sessionID).emit('changed team', {
+        console.log(username, changeToTeam);
+        db.query(`UPDATE "user" SET team='${changeToTeam}' WHERE room='${room}' AND username='${username}'`)
+          .then(() => {
+            io.to(room).emit('changed team', {
               user: {
-                username, isSpyMaster: spymaster, ready: false,
+                username, isSpyMaster: false, ready: false,
               },
-              teamKey: `${switchToTeam}Team`,
-              currTeam: switchToTeam,
+              teamKey: `${changeToTeam}Team`,
+              currTeam: changeToTeam,
               prevTeam,
             });
           })
@@ -62,11 +58,21 @@ module.exports = {
             console.log('error updating team in lobby ', err);
           });
       });
-      socket.on('ready', (username) => {
-        console.log('recieved from client for ready up: ', username, room);
-        db.query(`UPDATE "user" SET ready=(CASE WHEN ready=true THEN false ELSE true END) WHERE room='${room}' AND username='${username}' RETURNING ready`)
-          .then((data) => {
-            io.to(room).emit('ready changed', { username, ready: data.rows[0].ready });
+      socket.on('spymaster select', ({ username, team }) => {
+        db.query(`UPDATE "user" SET spymaster=TRUE WHERE username='${username[0]}' AND team ='${team[0]}' OR username='${username[1]}' AND team ='${team[1]}' `)
+          .then(() => {
+            console.log(room);
+            io.to(room).emit('selected spymasters');
+          })
+          .catch((err) => {
+            console.log('error in updating spymasters', err);
+          });
+      });
+      socket.on('game initiate', () => {
+        console.log('recieved from client for ready up: ', room);
+        db.query(`UPDATE "user" SET ready=TRUE WHERE room='${room}'`)
+          .then(() => {
+            io.to(room).emit('initiated game');
           });
       });
       socket.on('message', ({ text, username }) => {
@@ -75,16 +81,16 @@ module.exports = {
           .catch((err) => console.log('error inserting message to DB: ', err));
       });
       socket.on('tile clicked', ({
-        affiliation, boardLocation, team, sessionID,
+        affiliation, boardLocation, team,
       }) => {
         // DB query
         console.log(affiliation);
         console.log('inside tile picked action, in backend');
-        db.query(`UPDATE board SET selected=true WHERE room='${sessionID}' AND location=${boardLocation}`)
+        db.query(`UPDATE board SET selected=true WHERE room='${room}' AND location=${boardLocation}`)
           .then((res) => {
             // console.log('changed word status: ', res);
             io.to(room).emit('tile selected', ({
-              affiliation, boardLocation, team, sessionID,
+              affiliation, boardLocation, team, sessionID: room,
             }));
           })
           .catch((err) => console.log('error in updating tile: ', err));

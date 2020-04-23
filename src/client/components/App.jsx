@@ -3,12 +3,13 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   newMessage,
-  updateTeams,
+  joinLobby,
   selectTile,
   populateBoardSocket,
   updateClue,
   changeTurn,
-  updateStores,
+  changeTeams,
+  startGame,
 } from '../actions/actions';
 
 import Dashboard from '../containers/Dashboard';
@@ -19,10 +20,13 @@ const App = () => {
 
   if (socket) {
     socket.on('joined', (userObj) => {
-      dispatch(updateTeams(userObj));
+      dispatch(joinLobby(userObj));
     });
     socket.on('changed team', (userObj) => {
-      dispatch(updateTeams(userObj));
+      dispatch(changeTeams(userObj));
+    });
+    socket.on('initiated game', (ready) => {
+      dispatch(startGame(ready));
     });
     socket.on('new message', ({ username: user, text }) => {
       dispatch(newMessage({ user, text }));

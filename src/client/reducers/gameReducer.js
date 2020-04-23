@@ -1,17 +1,15 @@
 import * as types from '../constants/ActionTypes';
 import mockGameBoard from '../constants/mockGameBoard';
 
-const initialTeamObj = {
-  members: [],
-  wordsLeft: 0,
-};
 
 const initialState = {
   sessionID: null,
+  ready: false,
   currTeamTurn: 'blue',
-  redTeam: initialTeamObj,
-  blueTeam: initialTeamObj,
+  blueTeam: [],
+  redTeam: [],
   currUser: {
+    userID: '',
     username: '',
     isSpyMaster: false,
     team: 'blue',
@@ -23,8 +21,6 @@ const initialState = {
 };
 
 const gameReducer = (state = initialState, action) => {
-  // console.log(mockGameBoard);
-  // console.log('inside reducer');
   console.log('action is ', action);
   switch (action.type) {
     case types.NEW_SESSION: {
@@ -32,17 +28,17 @@ const gameReducer = (state = initialState, action) => {
       return {
         ...state,
         sessionID,
-        currUser: { username, isSpyMaster: true, team: 'blue' },
-        blueTeam: {
-          ...state.blueTeam,
-          members: [...state.blueTeam.members, { username, isSpyMaster: true, ready: false }],
+        currUser: {
+          username, isSpyMaster: true, team: 'blue', userID: action.payload.userID,
         },
+        blueTeam: [...state.blueTeam, { username, isSpyMaster: true, ready: false }],
       };
     }
     case types.JOIN_SESSION: {
-      // return { sessionID: action.payload.sessionID, username: action.payload.username };
-      const { sessionID, username, data } = action.payload;
-      console.log('pre updated state \n', data);
+      const {
+        sessionID, username, data, userID,
+      } = action.payload;
+      console.log('pre updated state \n', data, action.payload);
       const redCount = data.redTeam.length;
       const blueCount = data.blueTeam.length;
       const team = blueCount > redCount ? 'red' : 'blue';
@@ -52,11 +48,10 @@ const gameReducer = (state = initialState, action) => {
       return {
         ...state,
         sessionID,
-        currUser: { username, isSpyMaster, team },
-        [teamKey]: {
-          ...state[teamKey],
-          members: [...state[teamKey].members.map((cv) => ({ ...cv })), { username, isSpyMaster, ready: false }],
+        currUser: {
+          userID, username, isSpyMaster, team,
         },
+        [teamKey]: [...state[teamKey].map((cv) => ({ ...cv })), { username, isSpyMaster, ready: false }],
       };
     }
 
@@ -67,12 +62,14 @@ const gameReducer = (state = initialState, action) => {
         ...state,
         messages: [...action.payload.messages],
         gameBoard: action.payload.gameBoard.length ? [...action.payload.gameBoard] : [...state.gameBoard],
-        redTeam: { members: [...action.payload.redTeam], wordsLeft: action.payload.gameBoard.filter((cv) => cv.affiliation === 'red').length },
-        blueTeam: { members: [...action.payload.blueTeam], wordsLeft: action.payload.gameBoard.filter((cv) => cv.affiliation === 'blue').length },
+        blueTeam: [...action.payload.blueTeam],
+        redTeam: [...action.payload.redTeam],
         currUser: {
           ...state.currUser,
           isSpyMaster: action.payload.redTeam.length === 0,
         },
+        numBlueWords: action.payload.gameBoard.filter((cv) => cv.affiliation === 'blue').length,
+        numRedWords: action.payload.gameBoard.filter((cv) => cv.affiliation === 'red').length,
       };
     case types.NEW_MESSAGE:
       return { ...state, messages: [...state.messages, action.payload] };
@@ -91,34 +88,28 @@ const gameReducer = (state = initialState, action) => {
         gameBoard: newGameBoard,
       };
     }
-    case types.UPDATE_TEAMS:
-      console.log('state before updating teams ', state);
-      if (action.payload.prevTeam) {
-        return {
-          ...state,
-          currUser: {
-            ...state.currUser,
-            team: action.payload.currTeam,
-          },
-          [action.payload.teamKey]: {
-            ...state[action.payload.teamKey],
-            members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user],
-          },
-          [action.payload.prevTeam]: {
-            ...state[action.payload.prevTeam],
-            members: [...state[action.payload.prevTeam].members.filter((member) => member.username !== action.payload.user.username)],
-          },
-        };
-      }
+    case types.JOIN_LOBBY:
       return {
         ...state,
-        [action.payload.teamKey]: {
-          ...state[action.payload.teamKey],
-          members: [...state[action.payload.teamKey].members.map((cv) => ({ ...cv })), action.payload.user],
-        },
+        [action.payload.teamKey]: [...state[action.payload.teamKey].map((cv) => ({ ...cv })), action.payload.user],
       };
+    case types.CHANGE_TEAMS:
+      return {
+        ...state,
+        currUser: {
+          ...state.currUser,
+          team: action.payload.currTeam,
+        },
+        [action.payload.teamKey]: [...state[action.payload.teamKey].map((cv) => ({ ...cv })), action.payload.user],
+        [action.payload.prevTeam]: [...state[action.payload.prevTeam].filter(({ username }) => username !== action.payload.user.username)],
 
-
+      };
+    case types.CHANGE_SPYMASTER:
+      return {
+        ...state,
+        blueTeam: [...state.blueTeam.filter(({ username }) => username !== action.payload.username[0]), { username: action.payload.username[0], isSpyMaster: true, team: 'blue' }],
+        redTeam: [...state.redTeam.filter(({ username }) => username !== action.payload.username[1]), { username: action.payload.username[1], isSpyMaster: true, team: 'red' }],
+      };
     case types.UPDATE_CLUE:
       console.log('update clue and number of guesses in clue reducer');
       return {
@@ -138,6 +129,11 @@ const gameReducer = (state = initialState, action) => {
         currTeamTurn: action.payload.nextTeamTurn,
         guessesLeft: -1,
         currentClue: '',
+      };
+    case types.START_GAME:
+      return {
+        ...state,
+        ready: true,
       };
     default:
       console.log('default reducer run');

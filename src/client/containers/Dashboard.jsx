@@ -3,9 +3,10 @@ import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Lobby from '../components/Lobby';
 import FormContainer from './FormContainer';
+import ISpyContainer from './ISpyContainer';
 
 const Dashboard = () => {
-  const { sessionID } = useSelector((store) => store.game);
+  const { ready, sessionID } = useSelector((store) => store.game);
   const routes = [
     {
       path: '/',
@@ -13,19 +14,24 @@ const Dashboard = () => {
       main: () => (!sessionID ? <FormContainer /> : <Redirect to={`/session/${sessionID}`} />),
     },
     {
-      path: '/session/:sessionID',
+      path: '/:sessionID',
       exact: true,
-      main: () => <Lobby />,
+      main: () => (!ready ? <Lobby /> : <Redirect to="/codenames" />),
+    },
+    {
+      path: '/codenames',
+      exact: true,
+      main: () => (<ISpyContainer />),
     },
   ];
   return (
     <main>
-      {routes.map((route) => (
+      {routes.map(({ path, exact, main }) => (
         <Route
-          key={route.path}
-          path={route.path}
-          exact={route.exact}
-          component={route.main}
+          key={path}
+          path={path}
+          exact={exact}
+          component={main}
         />
       ))}
     </main>

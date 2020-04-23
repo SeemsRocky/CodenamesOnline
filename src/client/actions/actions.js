@@ -38,7 +38,7 @@ export const newSession = (username) => (dispatch) => fetch('/api/session/create
     // console.log('got data back: ', data);
     dispatch({
       type: types.NEW_SESSION,
-      payload: { sessionID: data.roomID, username },
+      payload: { sessionID: data.roomID, username, id: data.userID },
     });
   })
   .catch((e) => console.log('error caught: ', e));
@@ -69,15 +69,23 @@ export const updateStores = (room) => (dispatch) => fetch(`/api/session/update-s
     });
   });
 
-export const updateTeams = (payload) => ({
-  type: types.UPDATE_TEAMS,
+// ////////////// LOBBY
+export const joinLobby = (payload) => ({
+  type: types.JOIN_LOBBY,
+  payload,
+});
+
+export const changeTeams = (payload) => ({
+  type: types.CHANGE_TEAMS,
+  payload,
+});
+export const changeSpymaster = (payload) => ({
+  type: types.CHANGE_SPYMASTER,
   payload,
 });
 // /////////////// GAME STATE
 export const startGame = () => ({
-  // NEED A THUNK
   type: types.START_GAME,
-  payload: 'filler',
 });
 
 export const endGame = () => ({
